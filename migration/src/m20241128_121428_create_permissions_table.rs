@@ -1,5 +1,5 @@
 use sea_orm_migration::prelude::*;
-use crate::migration::{Permission, Resource};
+use crate::migration::{Permission, Resource, FK_PERMISSION_RESOURCE};
 
 #[derive(DeriveMigrationName)]
 pub struct Migration;
@@ -19,8 +19,18 @@ impl MigrationTrait for Migration {
                             .auto_increment()
                             .primary_key(),
                     )
-                    .col(ColumnDef::new(Permission::Name).string().not_null().unique_key())
-                    .col(ColumnDef::new(Permission::Slug).string().not_null().unique_key())
+                    .col(
+                        ColumnDef::new(Permission::Name)
+                            .string()
+                            .not_null()
+                            .unique_key(),
+                    )
+                    .col(
+                        ColumnDef::new(Permission::Slug)
+                            .string()
+                            .not_null()
+                            .unique_key(),
+                    )
                     .col(
                         ColumnDef::new(Permission::ResourceId)
                             .integer()
@@ -28,10 +38,10 @@ impl MigrationTrait for Migration {
                     )
                     .foreign_key(
                         ForeignKey::create()
-                            .name(Permission::FkResource)
+                            .name(FK_PERMISSION_RESOURCE) // Use the constant from lib.rs
                             .from(Permission::Table, Permission::ResourceId)
                             .to(Resource::Table, Resource::Id)
-                            .on_delete(ForeignKeyAction::Cascade)
+                            .on_delete(ForeignKeyAction::Cascade),
                     )
                     .to_owned(),
             )
@@ -39,15 +49,17 @@ impl MigrationTrait for Migration {
     }
 
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
+        // Drop the foreign key before dropping the table
         manager
             .alter_table(
                 Table::alter()
                     .table(Permission::Table)
-                    .drop_foreign_key(Permission::FkResource)
+                    .drop_foreign_key(Alias::new(FK_PERMISSION_RESOURCE)) // Use the constant from lib.rs
                     .to_owned(),
             )
             .await?;
-        
+
+        // Drop the table
         manager
             .drop_table(
                 Table::drop()

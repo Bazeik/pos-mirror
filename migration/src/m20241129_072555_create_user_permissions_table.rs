@@ -1,6 +1,5 @@
 use sea_orm_migration::prelude::*;
-use crate::migration::{UserPermission, User, Permission};
-
+use crate::migration::{User, Permission, UserPermission, FK_USERPERMISSION_USER, FK_USERPERMISSION_PERMISSION};
 
 #[derive(DeriveMigrationName)]
 pub struct Migration;
@@ -11,40 +10,40 @@ impl MigrationTrait for Migration {
         manager
             .create_table(
                 Table::create()
-                .table(UserPermission::Table)
-                .if_not_exists()
-                .col(
-                    ColumnDef::new(UserPermission::Id)
-                        .integer()
-                        .not_null()
-                        .auto_increment()
-                        .primary_key(),
-                )
-                .col(
-                    ColumnDef::new(UserPermission::UserId)
-                        .integer()
-                        .not_null(),
-                )
-                .foreign_key(
-                    ForeignKey::create()
-                        .name(UserPermission::FkUser)
-                        .from(UserPermission::Table, UserPermission::UserId)
-                        .to(User::Table, User::Id)
-                        .on_delete(ForeignKeyAction::Cascade),
-                )
-                .col(
-                    ColumnDef::new(UserPermission::PermissionId)
-                        .integer()
-                        .not_null(),
-                )
-                .foreign_key(
-                    ForeignKey::create()
-                        .name(UserPermission::FkPermission)
-                        .from(UserPermission::Table, UserPermission::PermissionId)
-                        .to(Permission::Table, Permission::Id)
-                        .on_delete(ForeignKeyAction::Cascade),
-                )
-                .to_owned(),
+                    .table(UserPermission::Table)
+                    .if_not_exists()
+                    .col(
+                        ColumnDef::new(UserPermission::Id)
+                            .integer()
+                            .not_null()
+                            .auto_increment()
+                            .primary_key(),
+                    )
+                    .col(
+                        ColumnDef::new(UserPermission::UserId)
+                            .integer()
+                            .not_null(),
+                    )
+                    .foreign_key(
+                        ForeignKey::create()
+                            .name(FK_USERPERMISSION_USER)
+                            .from(UserPermission::Table, UserPermission::UserId)
+                            .to(User::Table, User::Id)
+                            .on_delete(ForeignKeyAction::Cascade),
+                    )
+                    .col(
+                        ColumnDef::new(UserPermission::PermissionId)
+                            .integer()
+                            .not_null(),
+                    )
+                    .foreign_key(
+                        ForeignKey::create()
+                            .name(FK_USERPERMISSION_PERMISSION) // Use the constant for the FK name
+                            .from(UserPermission::Table, UserPermission::PermissionId)
+                            .to(Permission::Table, Permission::Id)
+                            .on_delete(ForeignKeyAction::Cascade),
+                    )
+                    .to_owned(),
             )
             .await
     }
@@ -54,7 +53,7 @@ impl MigrationTrait for Migration {
             .alter_table(
                 Table::alter()
                     .table(UserPermission::Table)
-                    .drop_foreign_key(UserPermission::FkUser)
+                    .drop_foreign_key(Alias::new(FK_USERPERMISSION_USER)) // Use the constant wrapped in `Alias`
                     .to_owned(),
             )
             .await?;
@@ -63,11 +62,12 @@ impl MigrationTrait for Migration {
             .alter_table(
                 Table::alter()
                     .table(UserPermission::Table)
-                    .drop_foreign_key(UserPermission::FkPermission)
+                    .drop_foreign_key(Alias::new(FK_USERPERMISSION_PERMISSION)) // Use the constant wrapped in `Alias`
                     .to_owned(),
             )
             .await?;
 
+        // Drop the table
         manager
             .drop_table(
                 Table::drop()

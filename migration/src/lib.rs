@@ -9,7 +9,7 @@ mod m20241128_121428_create_permissions_table;
 mod m20241129_072550_create_role_permissions_table;
 mod m20241129_072555_create_user_permissions_table;
 
-
+// Enum Definitions for Table and Column Names
 #[derive(Iden)]
 pub enum User {
     Table,
@@ -45,8 +45,6 @@ pub enum Permission {
     Name,
     Slug,
     ResourceId,
-    #[iden = "fk_permission_resource"]
-    FkResource,
 }
 
 #[derive(Iden)]
@@ -55,10 +53,6 @@ pub enum RolePermission {
     Id,
     RoleId,
     PermissionId,
-    #[iden = "fk_rolepermission_role"]
-    FkRole,
-    #[iden = "fk_rolepermission_permission"]
-    FkPermission,
 }
 
 #[derive(Iden)]
@@ -67,12 +61,16 @@ pub enum UserPermission {
     Id,
     UserId,
     PermissionId,
-    #[iden = "fk_userpermission_user"]
-    FkUser,
-    #[iden = "fk_userpermission_permission"]
-    FkPermission,
 }
 
+// Foreign Key Names as Constants
+pub const FK_PERMISSION_RESOURCE: &str = "fk_permission_resource";
+pub const FK_ROLEPERMISSION_ROLE: &str = "fk_rolepermission_role";
+pub const FK_ROLEPERMISSION_PERMISSION: &str = "fk_rolepermission_permission";
+pub const FK_USERPERMISSION_USER: &str = "fk_userpermission_user";
+pub const FK_USERPERMISSION_PERMISSION: &str = "fk_userpermission_permission";
+
+// Migrator Implementation
 #[async_trait::async_trait]
 impl MigratorTrait for Migrator {
     fn migrations() -> Vec<Box<dyn MigrationTrait>> {
