@@ -1,0 +1,12 @@
+[
+    {"id": 1, "name": "User Management", "slug": "user_management"},
+    {"id": 2, "name": "Content Management", "slug": "content_management"},
+    {"id": 3, "name": "Settings", "slug": "settings"},
+    {"id": 4, "name": "Reports", "slug": "reports"},
+    {"id": 5, "name": "Analytics", "slug": "analytics"},
+    {"id": 6, "name": "Notifications", "slug": "notifications"},
+    {"id": 7, "name": "API Access", "slug": "api_access"},
+    {"id": 8, "name": "User Roles", "slug": "user_roles"},
+    {"id": 9, "name": "User Permissions", "slug": "user_permissions"},
+    {"id": 10, "name": "Audit Logs", "slug": "audit_logs"}
+]

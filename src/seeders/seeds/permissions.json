@@ -1,0 +1,12 @@
+[
+    {"id": 1, "name": "Create User", "slug": "create_user", "resource_id": 1},
+    {"id": 2, "name": "Edit User", "slug": "edit_user", "resource_id": 1},
+    {"id": 3, "name": "Delete User", "slug": "delete_user", "resource_id": 1},
+    {"id": 4, "name": "View Users", "slug": "view_users", "resource_id": 1},
+    {"id": 5, "name": "Manage Content", "slug": "manage_content", "resource_id": 2},
+    {"id": 6, "name": "View Reports", "slug": "view_reports", "resource_id": 4},
+    {"id": 7, "name": "Access Analytics", "slug": "access_analytics", "resource_id": 5},
+    {"id": 8, "name": "Manage Settings", "slug": "manage_settings", "resource_id": 3},
+    {"id": 9, "name": "View Notifications", "slug": "view_notifications", "resource_id": 6},
+    {"id": 10, "name": "API Access", "slug": "api_access", "resource_id": 7}
+]

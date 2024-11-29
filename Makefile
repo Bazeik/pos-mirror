@@ -1,27 +1,44 @@
 # Default docker-compose command
-COMPOSE = docker-compose exec pos_backend
+COMPOSE = docker-compose
 
 # Run the application
 run:
-	$(COMPOSE) cargo run
+	$(COMPOSE) exec pos_backend cargo run
 	@echo ""
 
 # Run migrations
 migrate:
-	$(COMPOSE) cargo run migrate
+	$(COMPOSE) exec pos_backend cargo run migrate
 	@echo ""
+
 
 # Seed all tables
 seed-all:
-	$(COMPOSE) cargo run seed --table all
+	$(COMPOSE) exec pos_backend cargo run seed --table all
 	@echo ""
 
 # Seed a specific table
 seed:
-	$(COMPOSE) cargo run seed --table $(TABLE)
+	@if [ -z "$(TABLE)" ]; then \
+		echo "Error: TABLE is not set. Use 'make seed TABLE=<table_name>'."; \
+		exit 1; \
+	fi
+	$(COMPOSE) exec pos_backend cargo run seed --table $(TABLE)
 	@echo ""
 
 # Generate entities using sea-orm-cli
 generate-entities:
-	docker-compose run --rm sea-orm-cli
+	$(COMPOSE) run --rm sea-orm-cli sea-orm-cli generate entity -u $$DATABASE_URL -o src/entities
 	@echo ""
+
+# Help command
+help:
+	@echo "Available commands:"
+	@echo "  make run                - Run the application"
+	@echo "  make migrate            - Run migrations"
+	@echo "  make seed-all           - Seed all tables"
+	@echo "  make seed TABLE=<table> - Seed a specific table"
+	@echo "  make generate-entities  - Generate entities using sea-orm-cli"
+
+# Declare phony targets
+.PHONY: run migrate seed-all seed generate-entities help
