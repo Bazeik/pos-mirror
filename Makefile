@@ -27,8 +27,8 @@ seed:
 	@echo ""
 
 # Generate entities using sea-orm-cli
-generate-entities:
-	$(COMPOSE) run --rm sea-orm-cli sea-orm-cli generate entity -u $$DATABASE_URL -o src/entities
+entities:
+	sea-orm-cli generate entity -o src/entities
 	@echo ""
 
 # Help command

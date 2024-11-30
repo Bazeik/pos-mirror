@@ -2,13 +2,27 @@ pub use sea_orm_migration::prelude::*;
 
 pub struct Migrator;
 
+mod m20241124_151358_create_admin_users_table;
 mod m20241124_151359_create_users_table;
 mod m20241128_120615_create_resources_table;
 mod m20241128_121404_create_roles_table;
 mod m20241128_121428_create_permissions_table;
 mod m20241129_072550_create_role_permissions_table;
+mod m20241129_072555_create_admin_user_permissions_table;
 mod m20241129_072555_create_user_permissions_table;
 
+// Enum Definitions for Table and Column Names
+#[derive(Iden)]
+pub enum AdminUser {
+    Table,
+    Id,
+    Username,
+    Password,
+    Email,
+    FullName,
+    CreatedAt,
+    UpdatedAt,
+}
 // Enum Definitions for Table and Column Names
 #[derive(Iden)]
 pub enum User {
@@ -63,23 +77,35 @@ pub enum UserPermission {
     PermissionId,
 }
 
+#[derive(Iden)]
+pub enum AdminUserPermission {
+    Table,
+    Id,
+    AdminUserId,
+    PermissionId,
+}
+
 // Foreign Key Names as Constants
 pub const FK_PERMISSION_RESOURCE: &str = "fk_permission_resource";
 pub const FK_ROLEPERMISSION_ROLE: &str = "fk_rolepermission_role";
 pub const FK_ROLEPERMISSION_PERMISSION: &str = "fk_rolepermission_permission";
 pub const FK_USERPERMISSION_USER: &str = "fk_userpermission_user";
 pub const FK_USERPERMISSION_PERMISSION: &str = "fk_userpermission_permission";
+pub const FK_ADMINUSERPERMISSION_ADMINUSER: &str = "fk_adminuserpermission_adminuser";
+pub const FK_ADMINUSERPERMISSION_PERMISSION: &str = "fk_adminuserpermission_permission";
 
 // Migrator Implementation
 #[async_trait::async_trait]
 impl MigratorTrait for Migrator {
     fn migrations() -> Vec<Box<dyn MigrationTrait>> {
         vec![
+            Box::new(m20241124_151358_create_admin_users_table::Migration),
             Box::new(m20241124_151359_create_users_table::Migration),
             Box::new(m20241128_120615_create_resources_table::Migration),
             Box::new(m20241128_121404_create_roles_table::Migration),
             Box::new(m20241128_121428_create_permissions_table::Migration),
             Box::new(m20241129_072550_create_role_permissions_table::Migration),
+            Box::new(m20241129_072555_create_admin_user_permissions_table::Migration),
             Box::new(m20241129_072555_create_user_permissions_table::Migration),
         ]
     }

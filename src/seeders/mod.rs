@@ -4,6 +4,7 @@ use std::future::Future;
 use std::pin::Pin;
 use std::sync::Arc;
 
+pub mod admin_user_seeder;
 pub mod user_seeder;
 
 type Seeder = fn(Arc<DatabaseConnection>) -> Pin<Box<dyn Future<Output = Result<(), DbErr>>>>;
@@ -13,6 +14,14 @@ pub fn get_seeders() -> HashMap<&'static str, Seeder> {
     seeders.insert("user", |db: Arc<DatabaseConnection>| {
         let db_clone = db.clone();
         Box::pin(async move { user_seeder::seed(db_clone.as_ref()).await })
+    });
+    seeders.insert("admin_user", |db: Arc<DatabaseConnection>| {
+        let db_clone = db.clone();
+        Box::pin(async move { admin_user_seeder::seed(db_clone.as_ref()).await })
+    });
+    seeders.insert("resource", |db: Arc<DatabaseConnection>| {
+        let db_clone = db.clone();
+        Box::pin(async move { resource_seeder::seed(db_clone.as_ref()).await })
     });
     seeders
 }

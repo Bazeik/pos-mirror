@@ -1,6 +1,10 @@
+pub mod admin_user;
 pub mod user;
+pub mod permission;
+pub mod resource;
+pub mod role;
+pub mod role_permission;
+pub mod user_permission;
+pub mod admin_user_permission;
 
-pub mod prelude {
-    pub use super::user::Entity as User;
-    pub use super::user::ActiveModel as UserActiveModel;
-}
+pub mod prelude;

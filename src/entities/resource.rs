@@ -3,29 +3,25 @@
 use sea_orm::entity::prelude::*;
 
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Eq)]
-#[sea_orm(table_name = "user")]
+#[sea_orm(table_name = "resource")]
 pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
     #[sea_orm(unique)]
-    pub username: String,
-    pub password: String,
+    pub name: String,
     #[sea_orm(unique)]
-    pub email: String,
-    pub full_name: String,
-    pub created_at: DateTime,
-    pub updated_at: DateTime,
+    pub slug: String,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
 pub enum Relation {
-    #[sea_orm(has_many = "super::user_permission::Entity")]
-    UserPermission,
+    #[sea_orm(has_many = "super::permission::Entity")]
+    Permission,
 }
 
-impl Related<super::user_permission::Entity> for Entity {
+impl Related<super::permission::Entity> for Entity {
     fn to() -> RelationDef {
-        Relation::UserPermission.def()
+        Relation::Permission.def()
     }
 }
 
